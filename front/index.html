@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Менеджер Проектов: Гант + Канбан</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Платформа Управления Проектами</h1>
+      <p>Гант, Канбан, аналитика, критический путь</p>
+    </div>
+    <button id="refreshBtn" type="button">Обновить данные</button>
+  </header>
+
+  <main class="layout">
+    <section class="panel controls-panel">
+      <h2>Проекты</h2>
+      <div class="inline-row">
+        <select id="projectSelect"></select>
+        <button id="newProjectBtn" type="button">Новый проект</button>
+        <button id="editProjectBtn" type="button" class="secondary">Изменить проект</button>
+      </div>
+      <form id="projectForm" class="form-grid">
+        <label>
+          Название
+          <input id="projectName" type="text" required />
+        </label>
+        <label>
+          Описание
+          <input id="projectDescription" type="text" />
+        </label>
+        <label>
+          Дата начала
+          <input id="projectStart" type="date" />
+        </label>
+        <label>
+          Дата окончания
+          <input id="projectEnd" type="date" />
+        </label>
+        <div class="inline-row project-form-actions">
+          <button id="projectSubmitBtn" type="submit">Создать проект</button>
+          <button id="projectCancelEditBtn" type="button" class="secondary hidden">Отменить редактирование</button>
+          <button id="deleteProjectBtn" type="button" class="danger">Удалить проект</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel controls-panel">
+      <h2>Задача</h2>
+      <form id="taskForm" class="form-grid">
+        <label>
+          Название
+          <input id="taskTitle" type="text" required />
+        </label>
+        <label>
+          Описание
+          <input id="taskDescription" type="text" />
+        </label>
+        <label>
+          Исполнитель
+          <input id="taskAssignee" type="text" placeholder="Например: Иван" />
+        </label>
+        <label>
+          Статус
+          <select id="taskStatus">
+            <option value="0">К выполнению</option>
+            <option value="1">В работе</option>
+            <option value="2">На проверке</option>
+            <option value="3">Готово</option>
+          </select>
+        </label>
+        <label>
+          Начало
+          <input id="taskStart" type="date" />
+        </label>
+        <label>
+          Окончание
+          <input id="taskEnd" type="date" />
+        </label>
+        <label>
+          Прогресс (%)
+          <input id="taskProgress" type="number" min="0" max="100" value="0" />
+        </label>
+        <label>
+          Зависит от задачи ID
+          <input id="taskDependency" type="number" min="1" />
+        </label>
+        <div class="inline-row task-form-actions">
+          <button id="taskSubmitBtn" type="submit">Создать задачу</button>
+          <button id="taskCancelEditBtn" type="button" class="secondary hidden">Отменить редактирование</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="tabs-row">
+      <button class="tab-btn active" data-tab="gantt">Диаграмма Ганта</button>
+      <button class="tab-btn" data-tab="kanban">Канбан-доска</button>
+      <button class="tab-btn" data-tab="analytics">Аналитика</button>
+      <button class="tab-btn" data-tab="events">Команды и уведомления</button>
+    </section>
+
+    <section class="panel tab-content active" id="tab-gantt">
+      <h2>Гант + критический путь</h2>
+      <canvas id="ganttCanvas" width="1400" height="460"></canvas>
+    </section>
+
+    <section class="panel tab-content" id="tab-kanban">
+      <div class="kanban-head">
+        <h2>Канбан</h2>
+        <label>
+          Фильтр по исполнителю
+          <select id="assigneeFilter"></select>
+        </label>
+      </div>
+      <div class="kanban" id="kanbanBoard"></div>
+    </section>
+
+    <section class="panel tab-content" id="tab-analytics">
+      <h2>Аналитика проекта</h2>
+      <div class="analytics-grid">
+        <article class="metric"><h3>Процент выполнения</h3><p id="metricDone">0%</p></article>
+        <article class="metric"><h3>Средний прогресс</h3><p id="metricAvgProgress">0%</p></article>
+        <article class="metric"><h3>Просрочено задач</h3><p id="metricOverdue">0</p></article>
+        <article class="metric"><h3>Прогноз завершения</h3><p id="metricForecast">-</p></article>
+      </div>
+      <canvas id="assigneeChart" height="120"></canvas>
+    </section>
+
+    <section class="panel tab-content" id="tab-events">
+      <h2>Журнал действий (Command) и уведомления (Observer)</h2>
+      <div class="events-grid">
+        <div>
+          <h3>Последние команды</h3>
+          <ul id="commandsList" class="data-list"></ul>
+        </div>
+        <div>
+          <h3>Уведомления</h3>
+          <ul id="notificationsList" class="data-list"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
