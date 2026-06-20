@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include <sqlite3.h>
+#include "sqlite3.h"
 
 #include "api_json.h"
 #include "api_models.h"

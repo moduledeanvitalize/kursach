@@ -13,7 +13,24 @@
 namespace server {
 
 // Возвращает директорию запущенного бинарного файла.
+// Возвращает директорию запущенного бинарного файла.
 inline std::string getExecutableDir() {
+#ifdef _WIN32
+    char pathBuf[MAX_PATH] = {0};
+    DWORD len = GetModuleFileNameA(NULL, pathBuf, MAX_PATH);
+    if (len == 0) {
+        return ".";
+    }
+
+    std::string fullPath(pathBuf, len);
+    // В Windows пути могут использовать как '\', так и '/'
+    const size_t slashPos = fullPath.find_last_of("\\/");
+    if (slashPos == std::string::npos) {
+        return ".";
+    }
+
+    return fullPath.substr(0, slashPos);
+#else
     char pathBuf[PATH_MAX] = {0};
     const ssize_t len = readlink("/proc/self/exe", pathBuf, sizeof(pathBuf) - 1);
     if (len <= 0) {
@@ -27,6 +44,7 @@ inline std::string getExecutableDir() {
     }
 
     return fullPath.substr(0, slashPos);
+#endif
 }
 
 // Отключает кеширование ответа браузером.

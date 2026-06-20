@@ -1,7 +1,11 @@
 #include <iostream>
 #include <string>
 
+#ifdef _WIN32
+#include <process.h>
+#else
 #include <unistd.h>
+#endif
 
 #include "class/api_routes.h"
 #include "class/server_common.h"
@@ -21,7 +25,11 @@ int main() {
         return 1;
     }
 
+    #ifdef _WIN32
+    const int serverPid = static_cast<int>(_getpid());
+    #else
     const int serverPid = static_cast<int>(getpid());
+    #endif
     // Регистрация всех API маршрутов для работы с проектами, задачами и их зависимостями
     api_routes::registerRoutes(svr, dbHandle, defaultProjectId, dbPath, serverPid);
 
